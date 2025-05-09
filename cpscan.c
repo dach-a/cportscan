@@ -9,13 +9,13 @@
 #include <arpa/inet.h>
 #include <time.h>
 
-// ANSI color codes (fixed escape sequences)
+// Define ANSI color codes 
 #define RED "\x1b[31m"
 #define GREEN "\x1b[32m"
 #define BLUE "\x1b[34m"
 #define RESET "\x1b[0m"
 
-// Function prototypes (to fix implicit declaration warnings)
+// Create function prototypes for implicit declarations 
 void scan_port_range(const char* hostname, int start_port, int end_port);
 int resolve_hostname(const char* hostname, struct sockaddr_in* sa);
 void display_results(int open_count, int total_ports, double scan_time);
@@ -73,7 +73,7 @@ void scan_port_range(const char* hostname, int start_port, int end_port) {
             printf("\r" GREEN "Port %5d is open        \n" RESET, i);
             open_count++;
         } else {
-            printf("\r%79s\r", ""); // Clear line
+            printf("\r%79s\r", ""); 
         }
         close(sock);
     }
@@ -93,7 +93,7 @@ int resolve_hostname(const char* hostname, struct sockaddr_in* sa) {
         return 1;
     }
     
-    // Resolve hostname
+    // Resolve IP to hostname
     if((host = gethostbyname(hostname)) != NULL) {
         memcpy(&sa->sin_addr, host->h_addr_list[0], host->h_length);
         return 1;
