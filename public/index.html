@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Port Scanner - Online Tool</title>
+    <title>Advanced Port Scanner - Professional Tool</title>
     <style>
         * {
             margin: 0;
@@ -11,79 +11,133 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
 
-        .container {
+        .navbar {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 900px;
-            width: 100%;
-            padding: 40px;
+            padding: 15px 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 40px;
+        .navbar h2 {
+            color: var(--primary);
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .user-info {
+            color: var(--dark);
+            font-size: 0.9em;
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .nav-btn:hover {
+            background: var(--secondary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
         h1 {
-            color: #333;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 1.1em;
-        }
-
-        .form-section {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 8px;
+            color: white;
             margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5em;
+            grid-column: 1 / -1;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.5em;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #333;
+            color: var(--dark);
         }
 
         input[type="text"],
-        input[type="number"] {
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 6px;
             font-size: 1em;
-            transition: border-color 0.3s;
+            font-family: inherit;
         }
 
-        input[type="text"]:focus,
-        input[type="number"]:focus {
+        input:focus,
+        textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--primary);
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 15px;
         }
 
         @media (max-width: 600px) {
@@ -93,12 +147,12 @@
         }
 
         button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            padding: 14px 40px;
+            padding: 12px 30px;
             border: none;
             border-radius: 6px;
-            font-size: 1.1em;
+            font-size: 1em;
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -107,7 +161,7 @@
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
 
         button:disabled {
@@ -116,40 +170,17 @@
             transform: none;
         }
 
-        .results-section {
-            margin-top: 30px;
-        }
-
-        .progress-container {
-            margin-bottom: 30px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            width: 0%;
-            transition: width 0.3s;
-        }
-
-        .progress-text {
-            color: #666;
-            font-size: 0.9em;
-        }
-
         .alert {
             padding: 15px;
             border-radius: 6px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         .alert.success {
@@ -170,15 +201,62 @@
             border: 1px solid #ffeaa7;
         }
 
+        .alert.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--dark);
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
         .results-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            display: none;
-        }
-
-        .results-table.show {
-            display: table;
         }
 
         .results-table thead {
@@ -189,7 +267,7 @@
             padding: 12px;
             text-align: left;
             font-weight: 600;
-            color: #333;
+            color: var(--dark);
             border-bottom: 2px solid #e0e0e0;
         }
 
@@ -199,40 +277,64 @@
         }
 
         .status-open {
-            color: #28a745;
+            color: var(--success);
             font-weight: 600;
         }
 
         .status-closed {
-            color: #dc3545;
+            color: var(--danger);
+        }
+
+        .status-pending {
+            color: #666;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
         }
 
         .summary {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .summary.show {
-            display: block;
-        }
-
-        .summary-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         .summary-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
             text-align: center;
         }
 
         .summary-value {
             font-size: 2em;
             font-weight: bold;
-            color: #667eea;
+            color: var(--primary);
         }
 
         .summary-label {
@@ -243,10 +345,10 @@
 
         .spinner {
             display: none;
-            width: 30px;
-            height: 30px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-right: 10px;
@@ -268,354 +370,544 @@
             display: inline-block;
         }
 
-        .export-btn {
-            background: #6c757d;
-            margin-top: 10px;
+        .targets-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
         }
 
-        .export-btn:hover {
-            background: #5a6268;
-            box-shadow: 0 10px 20px rgba(108, 117, 125, 0.4);
+        .target-item {
+            background: white;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            color: #999;
-            font-size: 0.9em;
+        .history-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-info {
+            flex: 1;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .small-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+
+        .small-btn:hover {
+            background: var(--secondary);
+        }
+
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <h2>🔍 Advanced Port Scanner v2.0</h2>
+        <div class="nav-right">
+            <div class="user-info" id="userInfo" style="display: none;">
+                Logged in as: <strong id="username"></strong>
+            </div>
+            <div class="nav-right" id="authNav">
+                <button class="nav-btn" onclick="showAuthTab('login')">Login</button>
+                <button class="nav-btn" onclick="showAuthTab('register')">Register</button>
+            </div>
+            <button class="nav-btn hidden" id="logoutBtn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
     <div class="container">
-        <header>
-            <h1>🔍 Port Scanner</h1>
-            <p class="subtitle">Scan ports on any host to check their status</p>
-        </header>
+        <h1>Professional Network Scanner</h1>
 
-        <div class="alert alert-success" id="successAlert"></div>
-        <div class="alert alert-error" id="errorAlert"></div>
-        <div class="alert alert-warning" id="warningAlert"></div>
+        <!-- Auth Card -->
+        <div id="authCard" class="card">
+            <h2>Authentication</h2>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="switchAuthTab('login')">Login</button>
+                <button class="tab" onclick="switchAuthTab('register')">Register</button>
+            </div>
 
-        <div class="form-section">
-            <form id="scanForm">
-                <div class="form-group">
-                    <label for="hostname">Hostname or IP Address *</label>
-                    <input
-                        type="text"
-                        id="hostname"
-                        placeholder="e.g., example.com or 192.168.1.1"
-                        required
-                    />
-                </div>
-
-                <div class="form-row">
+            <div id="loginTab" class="tab-content active">
+                <div class="alert" id="loginAlert"></div>
+                <form id="loginForm" onsubmit="handleLogin(event)">
                     <div class="form-group">
-                        <label for="startPort">Start Port *</label>
-                        <input
-                            type="number"
-                            id="startPort"
-                            min="1"
-                            max="65535"
-                            value="80"
-                            required
-                        />
+                        <label for="loginUsername">Username</label>
+                        <input type="text" id="loginUsername" required />
                     </div>
                     <div class="form-group">
-                        <label for="endPort">End Port *</label>
-                        <input
-                            type="number"
-                            id="endPort"
-                            min="1"
-                            max="65535"
-                            value="443"
-                            required
-                        />
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required />
                     </div>
-                </div>
+                    <button type="submit">Login</button>
+                </form>
+                <p style="margin-top: 15px; color: #666; font-size: 0.9em;">
+                    Demo: username: <strong>demo</strong>, password: <strong>demo123</strong>
+                </p>
+            </div>
 
-                <button type="submit" id="scanBtn">Start Scan</button>
-            </form>
+            <div id="registerTab" class="tab-content">
+                <div class="alert" id="registerAlert"></div>
+                <form id="registerForm" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="regUsername">Username</label>
+                        <input type="text" id="regUsername" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">Email</label>
+                        <input type="email" id="regEmail" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword">Password</label>
+                        <input type="password" id="regPassword" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="regConfirmPassword">Confirm Password</label>
+                        <input type="password" id="regConfirmPassword" required />
+                    </div>
+                    <button type="submit">Register</button>
+                </form>
+            </div>
+
+            <div id="userDashboard" style="display: none;">
+                <h3 style="margin-bottom: 15px; color: var(--primary);">Welcome! Choose an action:</h3>
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('single')">Single Scan</button>
+                    <button class="tab" onclick="switchTab('batch')">Batch Scan</button>
+                    <button class="tab" onclick="switchTab('history')">Scan History</button>
+                </div>
+            </div>
         </div>
 
-        <div class="results-section">
-            <div class="scan-info" id="scanInfo">
-                <div class="spinner"></div>
-                <span id="scanStatus">Scanning...</span>
+        <!-- Scan Card -->
+        <div id="scanCard" class="card" style="display: none;">
+            <h2>Port Scanner</h2>
+
+            <!-- Single Scan Tab -->
+            <div id="singleTab" class="tab-content active">
+                <div class="alert" id="scanAlert"></div>
+                
+                <form id="scanForm" onsubmit="handleScan(event)">
+                    <div class="form-group">
+                        <label for="hostname">Target Hostname or IP</label>
+                        <input type="text" id="hostname" placeholder="example.com or 192.168.1.1" required />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="startPort">Start Port</label>
+                            <input type="number" id="startPort" min="1" max="65535" value="80" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="endPort">End Port</label>
+                            <input type="number" id="endPort" min="1" max="65535" value="443" required />
+                        </div>
+                    </div>
+                    <button type="submit" id="scanBtn">Start Scan</button>
+                </form>
+
+                <div id="scanProgress" style="display: none; margin-top: 30px;">
+                    <div class="scan-info" id="scanInfo">
+                        <div class="spinner"></div>
+                        <span id="scanStatus">Initializing scan...</span>
+                    </div>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div style="color: #666; font-size: 0.9em;">
+                        <span id="progressPercent">0</span>% complete
+                    </div>
+
+                    <div class="summary" id="scanSummary" style="display: none; margin-top: 20px;">
+                        <div class="summary-item">
+                            <div class="summary-value" id="openCount">0</div>
+                            <div class="summary-label">Open Ports</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value" id="totalCount">0</div>
+                            <div class="summary-label">Total Scanned</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value" id="scanTime">0s</div>
+                            <div class="summary-label">Scan Time</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; max-height: 400px; overflow-y: auto;">
+                        <table class="results-table" id="resultsTable">
+                            <thead>
+                                <tr>
+                                    <th>Port</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
-            <div class="progress-container" id="progressContainer" style="display: none;">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <div class="progress-text">
-                    <span id="progressPercent">0</span>% complete
+            <!-- Batch Scan Tab -->
+            <div id="batchTab" class="tab-content">
+                <div class="alert" id="batchAlert"></div>
+                
+                <form id="batchForm" onsubmit="handleBatchScan(event)">
+                    <div class="form-group">
+                        <label for="targetsList">Target Hosts (one per line)</label>
+                        <textarea id="targetsList" rows="5" placeholder="example.com&#10;192.168.1.1&#10;google.com" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="batchStartPort">Start Port</label>
+                            <input type="number" id="batchStartPort" min="1" max="65535" value="80" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="batchEndPort">End Port</label>
+                            <input type="number" id="batchEndPort" min="1" max="65535" value="443" required />
+                        </div>
+                    </div>
+                    <button type="submit" id="batchBtn">Start Batch Scan</button>
+                </form>
+
+                <div id="batchProgress" style="display: none; margin-top: 20px;">
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">Active Scans:</h3>
+                    <div id="batchScansList"></div>
                 </div>
             </div>
 
-            <div class="summary" id="summary">
-                <div class="summary-row">
-                    <div class="summary-item">
-                        <div class="summary-value" id="summaryOpen">0</div>
-                        <div class="summary-label">Open Ports</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-value" id="summaryTotal">0</div>
-                        <div class="summary-label">Total Scanned</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-value" id="summaryTime">0s</div>
-                        <div class="summary-label">Scan Time</div>
-                    </div>
+            <!-- History Tab -->
+            <div id="historyTab" class="tab-content">
+                <div id="historyContainer">
+                    <p style="text-align: center; color: #999;">Loading scan history...</p>
                 </div>
             </div>
-
-            <table class="results-table" id="resultsTable">
-                <thead>
-                    <tr>
-                        <th>Port</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="resultsBody"></tbody>
-            </table>
-
-            <button class="export-btn" id="exportBtn" style="display: none;">📥 Export Results (JSON)</button>
-        </div>
-
-        <div class="footer">
-            <p>cportscan-web v1.0 | Network scanning tool | Use responsibly</p>
         </div>
     </div>
 
     <script>
         const API_BASE = '/api';
+        let token = localStorage.getItem('token');
+        let currentUser = null;
         let currentScanId = null;
-        let scanPollInterval = null;
+        let ws = null;
 
-        const form = document.getElementById('scanForm');
-        const hostnameInput = document.getElementById('hostname');
-        const startPortInput = document.getElementById('startPort');
-        const endPortInput = document.getElementById('endPort');
-        const scanBtn = document.getElementById('scanBtn');
-        const scanInfo = document.getElementById('scanInfo');
-        const scanStatus = document.getElementById('scanStatus');
-        const progressContainer = document.getElementById('progressContainer');
-        const progressFill = document.getElementById('progressFill');
-        const progressPercent = document.getElementById('progressPercent');
-        const resultsTable = document.getElementById('resultsTable');
-        const resultsBody = document.getElementById('resultsBody');
-        const summary = document.getElementById('summary');
-        const summaryOpen = document.getElementById('summaryOpen');
-        const summaryTotal = document.getElementById('summaryTotal');
-        const summaryTime = document.getElementById('summaryTime');
-        const exportBtn = document.getElementById('exportBtn');
-        const successAlert = document.getElementById('successAlert');
-        const errorAlert = document.getElementById('errorAlert');
-        const warningAlert = document.getElementById('warningAlert');
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            await startScan();
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (token) {
+                verifyToken();
+            }
         });
 
-        exportBtn.addEventListener('click', exportResults);
-
-        async function startScan() {
-            const hostname = hostnameInput.value.trim();
-            const startPort = parseInt(startPortInput.value);
-            const endPort = parseInt(endPortInput.value);
-
-            // Validation
-            if (!hostname) {
-                showError('Please enter a hostname or IP address');
-                return;
-            }
-
-            if (startPort < 1 || startPort > 65535) {
-                showError('Start port must be between 1 and 65535');
-                return;
-            }
-
-            if (endPort < 1 || endPort > 65535) {
-                showError('End port must be between 1 and 65535');
-                return;
-            }
-
-            if (startPort > endPort) {
-                showError('Start port must be less than or equal to end port');
-                return;
-            }
-
-            if (endPort - startPort > 1000) {
-                showWarning('Warning: Scanning more than 1000 ports may take a while');
-            }
+        // Auth functions
+        async function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
 
             try {
-                scanBtn.disabled = true;
-                clearResults();
-                showScanStatus('Initiating scan...');
-
-                const response = await fetch(`${API_BASE}/scan`, {
+                const response = await fetch(`${API_BASE}/auth/login`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        hostname,
-                        startPort,
-                        endPort
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
                 });
 
                 const data = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(data.error || 'Failed to start scan');
+                    showAlert('loginAlert', data.error || 'Login failed', 'error');
+                    return;
+                }
+
+                token = data.token;
+                localStorage.setItem('token', token);
+                currentUser = data.user;
+                
+                showAlert('loginAlert', 'Login successful!', 'success');
+                updateUI();
+            } catch (error) {
+                showAlert('loginAlert', error.message, 'error');
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password, confirmPassword })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAlert('registerAlert', data.error || 'Registration failed', 'error');
+                    return;
+                }
+
+                token = data.token;
+                localStorage.setItem('token', token);
+                currentUser = data.user;
+                
+                showAlert('registerAlert', 'Registration successful!', 'success');
+                updateUI();
+            } catch (error) {
+                showAlert('registerAlert', error.message, 'error');
+            }
+        }
+
+        async function verifyToken() {
+            try {
+                const response = await fetch(`${API_BASE}/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    currentUser = await response.json();
+                    updateUI();
+                } else {
+                    token = null;
+                    localStorage.removeItem('token');
+                }
+            } catch (error) {
+                console.error('Token verification failed:', error);
+                token = null;
+                localStorage.removeItem('token');
+            }
+        }
+
+        function logout() {
+            token = null;
+            currentUser = null;
+            localStorage.removeItem('token');
+            updateUI();
+        }
+
+        function updateUI() {
+            const authCard = document.getElementById('authCard');
+            const scanCard = document.getElementById('scanCard');
+            const authNav = document.getElementById('authNav');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const userInfo = document.getElementById('userInfo');
+            const userDashboard = document.getElementById('userDashboard');
+            const loginForm = document.getElementById('loginForm');
+
+            if (token && currentUser) {
+                authCard.style.display = 'none';
+                scanCard.style.display = 'block';
+                authNav.style.display = 'none';
+                logoutBtn.classList.remove('hidden');
+                userInfo.style.display = 'block';
+                userDashboard.style.display = 'block';
+                document.getElementById('username').textContent = currentUser.username;
+                
+                loginForm.reset();
+                loadScanHistory();
+            } else {
+                authCard.style.display = 'block';
+                scanCard.style.display = 'none';
+                authNav.style.display = 'flex';
+                logoutBtn.classList.add('hidden');
+                userInfo.style.display = 'none';
+                userDashboard.style.display = 'none';
+            }
+        }
+
+        // Scan functions
+        async function handleScan(event) {
+            event.preventDefault();
+            const hostname = document.getElementById('hostname').value;
+            const startPort = parseInt(document.getElementById('startPort').value);
+            const endPort = parseInt(document.getElementById('endPort').value);
+
+            if (startPort > endPort) {
+                showAlert('scanAlert', 'Start port must be less than end port', 'error');
+                return;
+            }
+
+            try {
+                document.getElementById('scanBtn').disabled = true;
+                document.getElementById('scanProgress').style.display = 'block';
+                document.getElementById('scanSummary').style.display = 'none';
+
+                const response = await fetch(`${API_BASE}/scans/scan`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token && { 'Authorization': `Bearer ${token}` })
+                    },
+                    body: JSON.stringify({ hostname, startPort, endPort })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error);
                 }
 
                 currentScanId = data.scanId;
-                showSuccess(`Scan started with ID: ${data.scanId}`);
+                showAlert('scanAlert', 'Scan started successfully!', 'success');
+                connectWebSocket(data.scanId);
                 pollScanStatus();
             } catch (error) {
-                showError(error.message);
-                scanBtn.disabled = false;
+                showAlert('scanAlert', error.message, 'error');
+                document.getElementById('scanBtn').disabled = false;
+            }
+        }
+
+        async function handleBatchScan(event) {
+            event.preventDefault();
+            const targetsList = document.getElementById('targetsList').value;
+            const targets = targetsList.split('\n').filter(t => t.trim());
+            const startPort = parseInt(document.getElementById('batchStartPort').value);
+            const endPort = parseInt(document.getElementById('batchEndPort').value);
+
+            if (!token) {
+                showAlert('batchAlert', 'You must be logged in for batch scans', 'error');
+                return;
+            }
+
+            try {
+                document.getElementById('batchBtn').disabled = true;
+
+                const response = await fetch(`${API_BASE}/scans/scan/batch`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ targets, startPort, endPort })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error);
+                }
+
+                showAlert('batchAlert', `${data.scanIds.length} scans initiated!`, 'success');
+                document.getElementById('batchProgress').style.display = 'block';
+                data.scanIds.forEach(scanId => connectWebSocket(scanId));
+            } catch (error) {
+                showAlert('batchAlert', error.message, 'error');
+                document.getElementById('batchBtn').disabled = false;
             }
         }
 
         async function pollScanStatus() {
             if (!currentScanId) return;
 
-            scanPollInterval = setInterval(async () => {
+            const interval = setInterval(async () => {
                 try {
-                    const response = await fetch(`${API_BASE}/scan/${currentScanId}`);
+                    const response = await fetch(`${API_BASE}/scans/scan/${currentScanId}`, {
+                        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                    });
+
                     const data = await response.json();
 
-                    if (!response.ok) {
-                        throw new Error(data.error);
-                    }
-
-                    updateUI(data);
+                    updateScanUI(data);
 
                     if (data.status === 'completed' || data.status === 'failed') {
-                        clearInterval(scanPollInterval);
-                        scanBtn.disabled = false;
-                        if (data.status === 'failed') {
-                            showError(`Scan failed: ${data.error}`);
-                        } else {
-                            showSuccess('Scan completed successfully!');
-                        }
+                        clearInterval(interval);
+                        document.getElementById('scanBtn').disabled = false;
                     }
                 } catch (error) {
                     console.error('Poll error:', error);
-                    clearInterval(scanPollInterval);
-                    scanBtn.disabled = false;
-                    showError(`Error: ${error.message}`);
                 }
-            }, 500);
+            }, 1000);
         }
 
-        function updateUI(scanData) {
-            // Update progress
-            progressContainer.style.display = 'block';
-            progressFill.style.width = scanData.progress + '%';
-            progressPercent.textContent = scanData.progress;
-            scanStatus.textContent = `Scanning... ${scanData.progress}% complete`;
+        function updateScanUI(data) {
+            document.getElementById('progressFill').style.width = data.progress + '%';
+            document.getElementById('progressPercent').textContent = data.progress;
+            document.getElementById('scanStatus').textContent = `Scanning... ${data.progress}% complete`;
 
-            // Update results table
-            if (scanData.results.length > 0) {
-                resultsBody.innerHTML = '';
-                scanData.results.forEach(result => {
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+
+            if (data.results && data.results.length > 0) {
+                data.results.forEach(result => {
                     const row = document.createElement('tr');
-                    const statusClass = result.open ? 'status-open' : 'status-closed';
-                    const statusText = result.open ? 'OPEN' : 'CLOSED';
+                    const statusClass = result.status === 'open' ? 'status-open' : 'status-closed';
+                    const statusText = result.status === 'open' ? 'OPEN' : 'CLOSED';
                     row.innerHTML = `
                         <td>${result.port}</td>
                         <td class="${statusClass}">${statusText}</td>
                     `;
-                    resultsBody.appendChild(row);
+                    tbody.appendChild(row);
                 });
-                resultsTable.classList.add('show');
             }
 
-            // Update summary
-            if (scanData.status === 'completed') {
-                const openCount = scanData.results.filter(r => r.open).length;
-                const totalCount = scanData.results.length;
-                const scanTime = ((new Date(scanData.endTime) - new Date(scanData.startTime)) / 1000).toFixed(2);
-
-                summary.classList.add('show');
-                summaryOpen.textContent = openCount;
-                summaryTotal.textContent = totalCount;
-                summaryTime.textContent = scanTime + 's';
-                exportBtn.style.display = 'block';
+            if (data.status === 'completed') {
+                document.getElementById('scanSummary').style.display = 'grid';
+                document.getElementById('openCount').textContent = data.openPortsCount;
+                document.getElementById('totalCount').textContent = data.totalPortsCount;
+                document.getElementById('scanTime').textContent = data.scanTimeSeconds.toFixed(2) + 's';
             }
         }
 
-        function clearResults() {
-            resultsBody.innerHTML = '';
-            resultsTable.classList.remove('show');
-            summary.classList.remove('show');
-            progressContainer.style.display = 'none';
-            exportBtn.style.display = 'none';
-            hideAlerts();
+        function connectWebSocket(scanId) {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`${protocol}//${window.location.host}/ws/${scanId}`);
+
+            ws.onopen = () => {
+                ws.send(JSON.stringify({ type: 'subscribe', scanId }));
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.type === 'progress') {
+                    document.getElementById('progressFill').style.width = data.progress + '%';
+                    document.getElementById('progressPercent').textContent = data.progress;
+                }
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
         }
 
-        function showScanStatus(status) {
-            scanInfo.classList.add('show');
-            scanStatus.textContent = status;
-        }
+        async function loadScanHistory() {
+            if (!token) return;
 
-        function showSuccess(message) {
-            successAlert.textContent = message;
-            successAlert.style.display = 'block';
-            setTimeout(() => successAlert.style.display = 'none', 5000);
-        }
+            try {
+                const response = await fetch(`${API_BASE}/scans/history`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
 
-        function showError(message) {
-            errorAlert.textContent = message;
-            errorAlert.style.display = 'block';
-            setTimeout(() => errorAlert.style.display = 'none', 5000);
-        }
+                const data = await response.json();
+                const container = document.getElementById('historyContainer');
 
-        function showWarning(message) {
-            warningAlert.textContent = message;
-            warningAlert.style.display = 'block';
-            setTimeout(() => warningAlert.style.display = 'none', 5000);
-        }
-
-        function hideAlerts() {
-            successAlert.style.display = 'none';
-            errorAlert.style.display = 'none';
-            warningAlert.style.display = 'none';
-        }
-
-        function exportResults() {
-            if (!currentScanId) return;
-
-            fetch(`${API_BASE}/scan/${currentScanId}`)
-                .then(res => res.json())
-                .then(data => {
-                    const exportData = {
-                        scanId: data.id,
-                        hostname: data.hostname,
-                        scanTime: data.startTime,
-                        results: data.results
-                    };
-                    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-                        type: 'application/json'
-                    });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `scan_${data.id}.json`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                })
-                .catch(error => showError('Failed to export results'));
-        }
-    </script>
-</body>
-</html>
+                if (data.scans.length === 0) {
+                    container
