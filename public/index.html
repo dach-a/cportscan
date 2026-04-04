@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Port Scanner - Online Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-section {
+            margin-top: 30px;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .results-table.show {
+            display: table;
+        }
+
+        .results-table thead {
+            background: #f8f9fa;
+        }
+
+        .results-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .results-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .status-open {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .status-closed {
+            color: #dc3545;
+        }
+
+        .summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .summary.show {
+            display: block;
+        }
+
+        .summary-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .summary-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .spinner {
+            display: none;
+            width: 30px;
+            height: 30px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .scan-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .scan-info.show .spinner {
+            display: inline-block;
+        }
+
+        .export-btn {
+            background: #6c757d;
+            margin-top: 10px;
+        }
+
+        .export-btn:hover {
+            background: #5a6268;
+            box-shadow: 0 10px 20px rgba(108, 117, 125, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #999;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Port Scanner</h1>
+            <p class="subtitle">Scan ports on any host to check their status</p>
+        </header>
+
+        <div class="alert alert-success" id="successAlert"></div>
+        <div class="alert alert-error" id="errorAlert"></div>
+        <div class="alert alert-warning" id="warningAlert"></div>
+
+        <div class="form-section">
+            <form id="scanForm">
+                <div class="form-group">
+                    <label for="hostname">Hostname or IP Address *</label>
+                    <input
+                        type="text"
+                        id="hostname"
+                        placeholder="e.g., example.com or 192.168.1.1"
+                        required
+                    />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startPort">Start Port *</label>
+                        <input
+                            type="number"
+                            id="startPort"
+                            min="1"
+                            max="65535"
+                            value="80"
+                            required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="endPort">End Port *</label>
+                        <input
+                            type="number"
+                            id="endPort"
+                            min="1"
+                            max="65535"
+                            value="443"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <button type="submit" id="scanBtn">Start Scan</button>
+            </form>
+        </div>
+
+        <div class="results-section">
+            <div class="scan-info" id="scanInfo">
+                <div class="spinner"></div>
+                <span id="scanStatus">Scanning...</span>
+            </div>
+
+            <div class="progress-container" id="progressContainer" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progressPercent">0</span>% complete
+                </div>
+            </div>
+
+            <div class="summary" id="summary">
+                <div class="summary-row">
+                    <div class="summary-item">
+                        <div class="summary-value" id="summaryOpen">0</div>
+                        <div class="summary-label">Open Ports</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-value" id="summaryTotal">0</div>
+                        <div class="summary-label">Total Scanned</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-value" id="summaryTime">0s</div>
+                        <div class="summary-label">Scan Time</div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="results-table" id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Port</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody"></tbody>
+            </table>
+
+            <button class="export-btn" id="exportBtn" style="display: none;">📥 Export Results (JSON)</button>
+        </div>
+
+        <div class="footer">
+            <p>cportscan-web v1.0 | Network scanning tool | Use responsibly</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let currentScanId = null;
+        let scanPollInterval = null;
+
+        const form = document.getElementById('scanForm');
+        const hostnameInput = document.getElementById('hostname');
+        const startPortInput = document.getElementById('startPort');
+        const endPortInput = document.getElementById('endPort');
+        const scanBtn = document.getElementById('scanBtn');
+        const scanInfo = document.getElementById('scanInfo');
+        const scanStatus = document.getElementById('scanStatus');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const resultsTable = document.getElementById('resultsTable');
+        const resultsBody = document.getElementById('resultsBody');
+        const summary = document.getElementById('summary');
+        const summaryOpen = document.getElementById('summaryOpen');
+        const summaryTotal = document.getElementById('summaryTotal');
+        const summaryTime = document.getElementById('summaryTime');
+        const exportBtn = document.getElementById('exportBtn');
+        const successAlert = document.getElementById('successAlert');
+        const errorAlert = document.getElementById('errorAlert');
+        const warningAlert = document.getElementById('warningAlert');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await startScan();
+        });
+
+        exportBtn.addEventListener('click', exportResults);
+
+        async function startScan() {
+            const hostname = hostnameInput.value.trim();
+            const startPort = parseInt(startPortInput.value);
+            const endPort = parseInt(endPortInput.value);
+
+            // Validation
+            if (!hostname) {
+                showError('Please enter a hostname or IP address');
+                return;
+            }
+
+            if (startPort < 1 || startPort > 65535) {
+                showError('Start port must be between 1 and 65535');
+                return;
+            }
+
+            if (endPort < 1 || endPort > 65535) {
+                showError('End port must be between 1 and 65535');
+                return;
+            }
+
+            if (startPort > endPort) {
+                showError('Start port must be less than or equal to end port');
+                return;
+            }
+
+            if (endPort - startPort > 1000) {
+                showWarning('Warning: Scanning more than 1000 ports may take a while');
+            }
+
+            try {
+                scanBtn.disabled = true;
+                clearResults();
+                showScanStatus('Initiating scan...');
+
+                const response = await fetch(`${API_BASE}/scan`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        hostname,
+                        startPort,
+                        endPort
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to start scan');
+                }
+
+                currentScanId = data.scanId;
+                showSuccess(`Scan started with ID: ${data.scanId}`);
+                pollScanStatus();
+            } catch (error) {
+                showError(error.message);
+                scanBtn.disabled = false;
+            }
+        }
+
+        async function pollScanStatus() {
+            if (!currentScanId) return;
+
+            scanPollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`${API_BASE}/scan/${currentScanId}`);
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error);
+                    }
+
+                    updateUI(data);
+
+                    if (data.status === 'completed' || data.status === 'failed') {
+                        clearInterval(scanPollInterval);
+                        scanBtn.disabled = false;
+                        if (data.status === 'failed') {
+                            showError(`Scan failed: ${data.error}`);
+                        } else {
+                            showSuccess('Scan completed successfully!');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Poll error:', error);
+                    clearInterval(scanPollInterval);
+                    scanBtn.disabled = false;
+                    showError(`Error: ${error.message}`);
+                }
+            }, 500);
+        }
+
+        function updateUI(scanData) {
+            // Update progress
+            progressContainer.style.display = 'block';
+            progressFill.style.width = scanData.progress + '%';
+            progressPercent.textContent = scanData.progress;
+            scanStatus.textContent = `Scanning... ${scanData.progress}% complete`;
+
+            // Update results table
+            if (scanData.results.length > 0) {
+                resultsBody.innerHTML = '';
+                scanData.results.forEach(result => {
+                    const row = document.createElement('tr');
+                    const statusClass = result.open ? 'status-open' : 'status-closed';
+                    const statusText = result.open ? 'OPEN' : 'CLOSED';
+                    row.innerHTML = `
+                        <td>${result.port}</td>
+                        <td class="${statusClass}">${statusText}</td>
+                    `;
+                    resultsBody.appendChild(row);
+                });
+                resultsTable.classList.add('show');
+            }
+
+            // Update summary
+            if (scanData.status === 'completed') {
+                const openCount = scanData.results.filter(r => r.open).length;
+                const totalCount = scanData.results.length;
+                const scanTime = ((new Date(scanData.endTime) - new Date(scanData.startTime)) / 1000).toFixed(2);
+
+                summary.classList.add('show');
+                summaryOpen.textContent = openCount;
+                summaryTotal.textContent = totalCount;
+                summaryTime.textContent = scanTime + 's';
+                exportBtn.style.display = 'block';
+            }
+        }
+
+        function clearResults() {
+            resultsBody.innerHTML = '';
+            resultsTable.classList.remove('show');
+            summary.classList.remove('show');
+            progressContainer.style.display = 'none';
+            exportBtn.style.display = 'none';
+            hideAlerts();
+        }
+
+        function showScanStatus(status) {
+            scanInfo.classList.add('show');
+            scanStatus.textContent = status;
+        }
+
+        function showSuccess(message) {
+            successAlert.textContent = message;
+            successAlert.style.display = 'block';
+            setTimeout(() => successAlert.style.display = 'none', 5000);
+        }
+
+        function showError(message) {
+            errorAlert.textContent = message;
+            errorAlert.style.display = 'block';
+            setTimeout(() => errorAlert.style.display = 'none', 5000);
+        }
+
+        function showWarning(message) {
+            warningAlert.textContent = message;
+            warningAlert.style.display = 'block';
+            setTimeout(() => warningAlert.style.display = 'none', 5000);
+        }
+
+        function hideAlerts() {
+            successAlert.style.display = 'none';
+            errorAlert.style.display = 'none';
+            warningAlert.style.display = 'none';
+        }
+
+        function exportResults() {
+            if (!currentScanId) return;
+
+            fetch(`${API_BASE}/scan/${currentScanId}`)
+                .then(res => res.json())
+                .then(data => {
+                    const exportData = {
+                        scanId: data.id,
+                        hostname: data.hostname,
+                        scanTime: data.startTime,
+                        results: data.results
+                    };
+                    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+                        type: 'application/json'
+                    });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `scan_${data.id}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                })
+                .catch(error => showError('Failed to export results'));
+        }
+    </script>
+</body>
+</html>
